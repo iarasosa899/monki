@@ -41,8 +41,7 @@ const precios = {
     'Chimpancé (doble)': 8100,
     'Mandril (simple)': 6600,
     'Mandril (doble)': 8400,
-  },
-  envio: 500, // Costo fijo de envío
+  }
 };
 
 // Datos de las hamburguesas con imágenes
@@ -64,12 +63,11 @@ function PedidoForm() {
       extras: []
     }
   ]);
-  const [aplicarEnvio, setAplicarEnvio] = useState(false);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
     setTotal(calcularTotal());
-  }, [hamburguesas, aplicarEnvio]);
+  }, [hamburguesas]);
 
   const handleHamburguesaChange = (index, field, value) => {
     const nuevasHamburguesas = [...hamburguesas];
@@ -127,10 +125,6 @@ function PedidoForm() {
       });
     });
 
-    if (aplicarEnvio && hamburguesas.length > 0) {
-      total += precios.envio;
-    }
-
     return total;
   };
 
@@ -142,7 +136,7 @@ function PedidoForm() {
       .join('\n\n');
 
     const total = calcularTotal();
-    const mensajeConTotal = `${mensaje}\n\nTotal: $${total}\nCosto de envío: ${aplicarEnvio ? `$${precios.envio}` : 'No aplicado'}`;
+    const mensajeConTotal = `${mensaje}\n\nTotal: $${total}`;
 
     window.open(`https://wa.me/5491128950624?text=${encodeURIComponent(mensajeConTotal)}`);
   };
@@ -237,7 +231,7 @@ function PedidoForm() {
                     }
                     className="w-full mt-2 p-2 border border-[#a52a2a] bg-white text-black"
                   >
-                    <option value="">Selecciona bebida</option>
+                    <option value="">Selecciona una bebida</option>
                     {Object.keys(precios.bebidas).map(bebida => (
                       <option key={bebida} value={bebida}>
                         {bebida} - ${precios.bebidas[bebida]}
@@ -256,7 +250,7 @@ function PedidoForm() {
                         onChange={() => handleExtrasChange(index, extra)}
                         className="mr-2"
                       />
-                      <span>{extra} - ${precios.extras[extra]}</span>
+                      <label>{extra} - ${precios.extras[extra]}</label>
                     </div>
                   ))}
                 </div>
@@ -265,33 +259,27 @@ function PedidoForm() {
           ))}
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="text-center mt-6">
           <button
             onClick={agregarHamburguesa}
-            className="bg-[#4A3830] text-[#FF9633]  px-4 py-2 rounded-lg"
+            className="bg-[#f5a623] text-black px-4 py-2 rounded-lg"
           >
             Agregar Hamburguesa
           </button>
         </div>
-
-
-
-        <div className="mt-6 text-center text-2xl font-bold">
-          Total: ${total}
-        </div>
-
-        <div className="mt-6 text-center">
-        <button
-  onClick={enviarPedido}
-  className="w-full bg-[#4A3830] text-[#FF9633] p-2 rounded-full mt-4 flex items-center justify-center"
->
-  <FaWhatsapp className="mr-2" /> Enviar Pedido!
-</button>
-        </div>
       </div>
 
+      <div className="mt-6 text-center">
+        <h2 className="text-2xl font-semibold">Total: ${total}</h2>
+        <button
+          onClick={enviarPedido}
+          className="bg-[#f5a623] text-black px-4 py-2 rounded-lg mt-4"
+        >
+          Enviar Pedido
+        </button>
+      </div>
       <footer className="bg-[#001f18] p-4 mt-10 text-center text-white">
-        <p>2023 Monki Burgers ® Todos los derechos reservados.</p>
+        <p>2024 Monki Burgers ® Todos los derechos reservados.</p>
         <p>Desarrollado por el equipo Monki Burgers</p>
       </footer>
     </div>
