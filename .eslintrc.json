@@ -1,0 +1,9 @@
+{
+    "rules": {
+      "no-unused-vars": "warn",
+      "react-hooks/exhaustive-deps": "warn",
+      "jsx-a11y/no-static-element-interactions": "warn",
+      // Agrega más reglas según sea necesario
+    }
+  }
+  
