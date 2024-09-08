@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import titiImage from './assets/images/TITI.png';
@@ -7,12 +7,12 @@ import orangutanImage from './assets/images/orangutan.png';
 import lemurImage from './assets/images/lemur.png';
 import chimpanceImage from './assets/images/CHIMPANCE.png';
 import mandrilImage from './assets/images/mandril.png';
+import { FaWhatsapp } from 'react-icons/fa';
 
 // Precios de los elementos
 const precios = {
   bebidas: {
-   
-  'Coca-Cola 2.35lts': 2800,
+    'Coca-Cola 2.35lts': 2800,
     'Coca-Cola Zero 1.75lts': 2200,
     'Brahma 473ml': 1200,
     'Heineken 710ml': 2800,
@@ -64,16 +64,19 @@ function PedidoForm() {
       extras: []
     }
   ]);
-  const [aplicarEnvio, setAplicarEnvio] = useState(false); // Nuevo estado para el costo de envío
+  const [aplicarEnvio, setAplicarEnvio] = useState(false);
+  const [total, setTotal] = useState(0);
 
-  // Función para actualizar los campos de una hamburguesa específica
+  useEffect(() => {
+    setTotal(calcularTotal());
+  }, [hamburguesas, aplicarEnvio]);
+
   const handleHamburguesaChange = (index, field, value) => {
     const nuevasHamburguesas = [...hamburguesas];
     nuevasHamburguesas[index][field] = value;
     setHamburguesas(nuevasHamburguesas);
   };
 
-  // Función para agregar una hamburguesa más al pedido
   const agregarHamburguesa = () => {
     setHamburguesas([
       ...hamburguesas,
@@ -86,13 +89,11 @@ function PedidoForm() {
     ]);
   };
 
-  // Función para eliminar una hamburguesa del pedido
   const eliminarHamburguesa = (index) => {
     const nuevasHamburguesas = hamburguesas.filter((_, i) => i !== index);
     setHamburguesas(nuevasHamburguesas);
   };
 
-  // Función para gestionar los extras
   const handleExtrasChange = (index, extra) => {
     const nuevasHamburguesas = [...hamburguesas];
     if (nuevasHamburguesas[index].extras.includes(extra)) {
@@ -105,33 +106,27 @@ function PedidoForm() {
     setHamburguesas(nuevasHamburguesas);
   };
 
-  // Función para calcular el total del pedido
   const calcularTotal = () => {
     let total = 0;
 
     hamburguesas.forEach(hamburguesa => {
-      // Sumar el precio de la hamburguesa
       if (hamburguesa.tipoHamburguesa) {
         total += precios.hamburguesas[hamburguesa.tipoHamburguesa] || 0;
       }
 
-      // Sumar el precio de la bebida
       if (hamburguesa.bebida) {
         total += precios.bebidas[hamburguesa.bebida] || 0;
       }
 
-      // Sumar el precio de las papas
       if (hamburguesa.papas) {
         total += precios.papas[hamburguesa.papas] || 0;
       }
 
-      // Sumar el precio de los extras
       hamburguesa.extras.forEach(extra => {
         total += precios.extras[extra] || 0;
       });
     });
 
-    // Sumar el costo de envío solo si se selecciona la opción y hay al menos una hamburguesa
     if (aplicarEnvio && hamburguesas.length > 0) {
       total += precios.envio;
     }
@@ -139,7 +134,6 @@ function PedidoForm() {
     return total;
   };
 
-  // Función para enviar el pedido a WhatsApp
   const enviarPedido = () => {
     const mensaje = hamburguesas
       .map((hamburguesa, index) => {
@@ -155,7 +149,6 @@ function PedidoForm() {
 
   return (
     <div className="p-4 bg-[#08b988] text-white">
-      {/* Header personalizado */}
       <header className="bg-[#001f18] p-4">
         <img src="/monkilogo.png" alt="Logo Monki Burgers" className="logo" />
         <h1 className="text-3xl text-center"></h1>
@@ -172,128 +165,135 @@ function PedidoForm() {
       </header>
 
       <div className="mt-10">
-        {hamburguesas.map((hamburguesa, index) => (
-          <div key={index} className="mb-6 p-4 bg-gray-200 text-black rounded-lg relative">
-            <h3 className="text-lg font-semibold">Hamburguesa {index + 1}</h3>
+        <div className="flex flex-wrap -mx-4">
+          {hamburguesas.map((hamburguesa, index) => (
+            <div key={index} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-6">
+              <div className="p-4 bg-gray-200 text-black rounded-lg relative">
+                <h3 className="text-lg font-semibold">Hamburguesa {index + 1}</h3>
 
-            {hamburguesas.length > 1 && (
-              <button
-                onClick={() => eliminarHamburguesa(index)}
-                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg"
-              >
-                Eliminar
-              </button>
-            )}
+                {hamburguesas.length > 1 && (
+                  <button
+                    onClick={() => eliminarHamburguesa(index)}
+                    className="absolute top-2 right-2 bg-[#a52a2a] text-[#f5a623] px-2 py-1 rounded-lg"
+                  >
+                    Eliminar
+                  </button>
+                )}
 
-            <div className="mb-4">
-              <label>Elegi tu monki-hamburguesa! (todas incluyen papas)</label>
-              <select
-                value={hamburguesa.tipoHamburguesa}
-                onChange={(e) =>
-                  handleHamburguesaChange(index, 'tipoHamburguesa', e.target.value)
-                }
-                className="w-full mt-2 p-2 border"
-              >
-                <option value="">Selecciona una hamburguesa</option>
-                {Object.keys(precios.hamburguesas).map(hamburguesa => (
-                  <option key={hamburguesa} value={hamburguesa}>
-                    {hamburguesa} - ${precios.hamburguesas[hamburguesa]}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <div className="mb-4">
+                  <label>Elegi tu monki-hamburguesa! (todas incluyen papas)</label>
+                  <select
+                    value={hamburguesa.tipoHamburguesa}
+                    onChange={(e) =>
+                      handleHamburguesaChange(index, 'tipoHamburguesa', e.target.value)
+                    }
+                    className="w-full mt-2 p-2 border border-[#a52a2a] bg-white text-black"
+                  >
+                    <option value="">Selecciona una hamburguesa</option>
+                    {Object.keys(precios.hamburguesas).map(hamburguesa => (
+                      <option key={hamburguesa} value={hamburguesa}>
+                        {hamburguesa} - ${precios.hamburguesas[hamburguesa]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            {hamburguesa.tipoHamburguesa && (
-              <div className="mb-4">
-                <img
-                  src={hamburguesasData.find((item) =>
-                    hamburguesa.tipoHamburguesa.includes(item.nombre)
-                  )?.imagen}
-                  alt={hamburguesa.tipoHamburguesa}
-                  className="w-full max-w-xs mx-auto"
-                />
-              </div>
-            )}
-
-            <div className="mb-4">
-              <label>Caja de papas</label>
-              <select
-                value={hamburguesa.papas}
-                onChange={(e) => handleHamburguesaChange(index, 'papas', e.target.value)}
-                className="w-full mt-2 p-2 border"
-              >
-                <option value="">Selecciona tu caja de papas (opcional)</option>
-                {Object.keys(precios.papas).map(papa => (
-                  <option key={papa} value={papa}>
-                    {papa} - ${precios.papas[papa]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mb-4">
-              <label>Bebida</label>
-              <select
-                value={hamburguesa.bebida}
-                onChange={(e) => handleHamburguesaChange(index, 'bebida', e.target.value)}
-                className="w-full mt-2 p-2 border"
-              >
-                <option value="">Selecciona una bebida (opcional) </option>
-                {Object.keys(precios.bebidas).map(bebida => (
-                  <option key={bebida} value={bebida}>
-                    {bebida} - ${precios.bebidas[bebida]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mb-4">
-              <label>Extras para la monki-hamburguesa:</label>
-              <div className="space-y-2 mt-2">
-                {Object.keys(precios.extras).map(extra => (
-                  <label key={extra} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={hamburguesa.extras.includes(extra)}
-                      onChange={() => handleExtrasChange(index, extra)}
-                      className="mr-2"
+                {hamburguesa.tipoHamburguesa && (
+                  <div className="mb-4">
+                    <img
+                      src={hamburguesasData.find((item) =>
+                        hamburguesa.tipoHamburguesa.includes(item.nombre)
+                      )?.imagen}
+                      alt={hamburguesa.tipoHamburguesa}
+                      className="w-full max-w-xs mx-auto"
                     />
-                    {extra} - ${precios.extras[extra]}
-                  </label>
-                ))}
+                  </div>
+                )}
+
+                <div className="mb-4">
+                  <label>Papas</label>
+                  <select
+                    value={hamburguesa.papas}
+                    onChange={(e) =>
+                      handleHamburguesaChange(index, 'papas', e.target.value)
+                    }
+                    className="w-full mt-2 p-2 border border-[#a52a2a] bg-white text-black"
+                  >
+                    <option value="">Selecciona papas</option>
+                    {Object.keys(precios.papas).map(papas => (
+                      <option key={papas} value={papas}>
+                        {papas} - ${precios.papas[papas]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label>Bebida</label>
+                  <select
+                    value={hamburguesa.bebida}
+                    onChange={(e) =>
+                      handleHamburguesaChange(index, 'bebida', e.target.value)
+                    }
+                    className="w-full mt-2 p-2 border border-[#a52a2a] bg-white text-black"
+                  >
+                    <option value="">Selecciona bebida</option>
+                    {Object.keys(precios.bebidas).map(bebida => (
+                      <option key={bebida} value={bebida}>
+                        {bebida} - ${precios.bebidas[bebida]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label>Extras</label>
+                  {Object.keys(precios.extras).map(extra => (
+                    <div key={extra} className="flex items-center mb-2">
+                      <input
+                        type="checkbox"
+                        checked={hamburguesa.extras.includes(extra)}
+                        onChange={() => handleExtrasChange(index, extra)}
+                        className="mr-2"
+                      />
+                      <span>{extra} - ${precios.extras[extra]}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
+        <div className="mt-6 text-center">
+          <button
+            onClick={agregarHamburguesa}
+            className="bg-[#4A3830] text-[#FF9633]  px-4 py-2 rounded-lg"
+          >
+            Agregar Hamburguesa
+          </button>
+        </div>
+
+
+
+        <div className="mt-6 text-center text-2xl font-bold">
+          Total: ${total}
+        </div>
+
+        <div className="mt-6 text-center">
         <button
-  onClick={agregarHamburguesa}
-  className="btn-agregar"
+  onClick={enviarPedido}
+  className="w-full bg-[#4A3830] text-[#FF9633] p-2 rounded-full mt-4 flex items-center justify-center"
 >
-  Agregar otra hamburguesa
+  <FaWhatsapp className="mr-2" /> Enviar Pedido!
 </button>
-
-        <div className="mb-4">
-          <label>
-            <input
-              type="checkbox"
-              checked={aplicarEnvio}
-              onChange={() => setAplicarEnvio(!aplicarEnvio)}
-              className="mr-2"
-            />
-            Vivir a más de 4 km (se cobra envío de ${precios.envio})
-          </label>
         </div>
-
-        <div className="text-lg font-semibold mb-4">
-          <p>Total del pedido: ${calcularTotal()}</p>
-        </div>
-
-        <button on Click={enviarPedido} className="btn-enviar">
-  Enviar Pedido
-</button>
-
       </div>
+
+      <footer className="bg-[#001f18] p-4 mt-10 text-center text-white">
+        <p>2023 Monki Burgers ® Todos los derechos reservados.</p>
+        <p>Desarrollado por el equipo Monki Burgers</p>
+      </footer>
     </div>
   );
 }
