@@ -148,7 +148,7 @@ function PedidoForm() {
         <h1 className="text-3xl text-center"></h1>
         <div className="flex justify-center space-x-4 mt-2">
           <a
-            href="https://instagram.com/monki_burgers"
+            href="https://www.instagram.com/monkiburger_/"
             className="ig"
             target="_blank"
             rel="noopener noreferrer"
