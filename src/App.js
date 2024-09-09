@@ -205,7 +205,7 @@ function PedidoForm() {
                 )}
 
                 <div className="mb-4">
-                  <label>Papas</label>
+                  <label>Caja de Papas</label>
                   <select
                     value={hamburguesa.papas}
                     onChange={(e) =>
@@ -213,7 +213,7 @@ function PedidoForm() {
                     }
                     className="w-full mt-2 p-2 border border-[#a52a2a] bg-white text-black"
                   >
-                    <option value="">Selecciona papas</option>
+                    <option value="">Selecciona tu caja de papas (opcional)</option>
                     {Object.keys(precios.papas).map(papas => (
                       <option key={papas} value={papas}>
                         {papas} - ${precios.papas[papas]}
@@ -223,7 +223,7 @@ function PedidoForm() {
                 </div>
 
                 <div className="mb-4">
-                  <label>Bebida</label>
+                  <label>Bebidas</label>
                   <select
                     value={hamburguesa.bebida}
                     onChange={(e) =>
@@ -231,7 +231,7 @@ function PedidoForm() {
                     }
                     className="w-full mt-2 p-2 border border-[#a52a2a] bg-white text-black"
                   >
-                    <option value="">Selecciona una bebida</option>
+                    <option value="">Selecciona una bebida (opcional)</option>
                     {Object.keys(precios.bebidas).map(bebida => (
                       <option key={bebida} value={bebida}>
                         {bebida} - ${precios.bebidas[bebida]}
@@ -262,9 +262,9 @@ function PedidoForm() {
         <div className="text-center mt-6">
           <button
             onClick={agregarHamburguesa}
-            className="bg-[#f5a623] text-black px-4 py-2 rounded-lg"
+            className="bg-[#4A3830] text-[#FF9633] px-4 py-2 rounded-full"
           >
-            Agregar Hamburguesa
+            Agregar Hamburguesa!
           </button>
         </div>
       </div>
@@ -273,9 +273,9 @@ function PedidoForm() {
         <h2 className="text-2xl font-semibold">Total: ${total}</h2>
         <button
           onClick={enviarPedido}
-          className="bg-[#f5a623] text-black px-4 py-2 rounded-lg mt-4"
+          className="bg-[#4A3830] text-[#FF9633] px-4 py-2 rounded-full mt-4"
         >
-          Enviar Pedido
+          Enviar Pedido a wsp 
         </button>
       </div>
       <footer className="bg-[#001f18] p-4 mt-10 text-center text-white">
