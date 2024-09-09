@@ -7,7 +7,7 @@ import orangutanImage from './assets/images/orangutan.png';
 import lemurImage from './assets/images/lemur.png';
 import chimpanceImage from './assets/images/CHIMPANCE.png';
 import mandrilImage from './assets/images/mandril.png';
-import { FaWhatsapp } from 'react-icons/fa';
+
 
 // Precios de los elementos
 const precios = {
